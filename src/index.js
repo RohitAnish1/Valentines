@@ -1,17 +1,36 @@
+// index.js (React app)
 import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
+import ReactDOM from 'react-dom';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import OrchidAnimation from './OrchidAnimation';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
+const sendEmail = async () => {
+  try {
+    const response = await fetch('/sendEmail', { // Assuming your Cloud Function endpoint is '/sendEmail'
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ message: 'She pressed Yes' }),
+    });
+    if (response.ok) {
+      console.log('Email sent successfully!');
+    } else {
+      console.error('Failed to send email');
+    }
+  } catch (error) {
+    console.error('Error sending email:', error);
+  }
+};
+
+ReactDOM.render(
   <React.StrictMode>
-    <App />
-  </React.StrictMode>
+    <App sendEmail={sendEmail} />
+    <OrchidAnimation />
+    <button onClick={sendEmail}>Yes</button> {/* Button to trigger email sending */}
+  </React.StrictMode>,
+  document.getElementById('root')
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
